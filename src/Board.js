@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Note from "./Note";
-
+import FaPlus from 'react-icons/lib/fa/plus'
 
 class Board extends Component {
     constructor(props) {
@@ -19,10 +19,27 @@ class Board extends Component {
                 note: "Study hard"
             }]
         }
-
+        this.add = this.add.bind(this);
         this.eachNote = this.eachNote.bind(this);
-        this.update   = this.update.bind(this);
-        this.remove   = this.remove.bind(this);
+        this.update = this.update.bind(this);
+        this.remove = this.remove.bind(this);
+    }
+
+    nextId() {
+        this.uniqueId = this.uniqueId || 0;
+        return this.uniqueId++
+    }
+
+    add(text) {
+        this.setState(prevState => ({
+            notes: [
+                ...prevState.notes,
+                {
+                    id: this.nextId(),
+                    note: text
+                }
+            ]
+        }))
     }
 
     update(newText, i) {
@@ -57,6 +74,9 @@ class Board extends Component {
         return (
             <div className="board">
                 {this.state.notes.map(this.eachNote)}
+                <button onClick={this.add.bind(null, "New Note")}
+                    id="add">
+                    <FaPlus /></button>
             </div>
         );
     }
