@@ -6,18 +6,7 @@ class Board extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            notes: [{
-                id: 0,
-                note: "Call Dan"
-            },
-            {
-                id: 1,
-                note: "Email John"
-            },
-            {
-                id: 2,
-                note: "Study hard"
-            }]
+            notes: []
         }
         this.add = this.add.bind(this);
         this.eachNote = this.eachNote.bind(this);
@@ -42,6 +31,17 @@ class Board extends Component {
         }))
     }
 
+    componentWillMount() {
+        var self = this;
+        if (this.props.count) {
+            fetch(`https://baconipsum.com/api/?type=all-meat&sentenses=${this.props.count}`)
+                .then(response => response.json())
+                .then(json => json[0]
+                    .split('. ')
+                    .forEach(sentence => self.add(sentence.substring(0, 25))))
+        }
+    }
+
     update(newText, i) {
         console.log('updateing item at index ', i, newText);
         this.setState(prevState => ({
@@ -61,8 +61,8 @@ class Board extends Component {
 
     eachNote(note, i) {
         return (
-            <Note key={i}
-                index={i}
+            <Note key={note.id}
+                index={note.id}
                 onChange={this.update}
                 onRemove={this.remove}>
                 {note.note}
